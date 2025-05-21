@@ -18,6 +18,14 @@ def generate_nice_things(prompt: str, previous_response: Optional[str] = None) -
             # Using Gemini 1.5 Flash - faster and more cost-effective
             model = genai.GenerativeModel('gemini-1.5-flash')
             
+            # Optional: Set generation config parameters
+            generation_config = {
+                "temperature": 0.7,  # Controls creativity (0.0-1.0)
+                "top_p": 0.95,       # Nucleus sampling
+                "top_k": 40,         # Top-k sampling
+                "max_output_tokens": 256,  # Maximum length of response
+            }
+            
             if previous_response:
                 # Include previous response for refinement
                 full_prompt = f"""
@@ -39,7 +47,10 @@ def generate_nice_things(prompt: str, previous_response: Optional[str] = None) -
                 Keep it concise (2-4 sentences).
                 """
             
-            response = model.generate_content(full_prompt)
+            response = model.generate_content(
+                full_prompt,
+                generation_config=generation_config
+            )
             return response.text
         else:
             # Placeholder response when API is not connected
@@ -130,7 +141,7 @@ if st.button(button_text, type="primary"):
         
         # Clear input for refinement
         # We'll keep the input for this demo to make refinement easier
-        # st.experimental_rerun()
+        # st.rerun()
 
 # Display current response
 if st.session_state.current_nice_thing:
@@ -138,12 +149,14 @@ if st.session_state.current_nice_thing:
     message_container = st.container(border=True)
     
     with message_container:
-        st.markdown(st.session_state.current_nice_thing)
+        # Store the message in a variable for easier access
+        nice_message = st.session_state.current_nice_thing
+        st.markdown(nice_message)
         
-        col1, col2 = st.columns([3, 1])
-        with col2:
-            if st.button("Copy to Clipboard"):
-                st.toast("Message copied to clipboard!")
+        # Use Streamlit's built-in clipboard functionality
+        st.button("Copy to Clipboard", 
+                 on_click=lambda: st.write_to_clipboard(nice_message),
+                 help="Copy this message to your clipboard")
 
 # History section (collapsible)
 if st.session_state.history:
@@ -159,4 +172,4 @@ if st.session_state.current_nice_thing:
     if st.button("Start New Message"):
         st.session_state.current_nice_thing = None
         # Don't clear history
-        st.experimental_rerun()
+        st.rerun()
