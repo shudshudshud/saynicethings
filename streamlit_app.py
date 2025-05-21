@@ -153,34 +153,17 @@ if st.session_state.current_nice_thing:
         nice_message = st.session_state.current_nice_thing
         st.markdown(nice_message)
         
-        # Implement clipboard functionality using JavaScript
-        st.markdown("""
-        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-            <button 
-                onclick="
-                    navigator.clipboard.writeText(document.getElementById('nice-message-text').innerText);
-                    this.innerText='Copied!';
-                    setTimeout(() => this.innerText='Copy to Clipboard', 2000);
-                "
-                style="
-                    background-color: #4CAF50;
-                    border: none;
-                    color: white;
-                    padding: 8px 16px;
-                    text-align: center;
-                    text-decoration: none;
-                    display: inline-block;
-                    font-size: 14px;
-                    margin: 4px 2px;
-                    cursor: pointer;
-                    border-radius: 4px;
-                "
-            >Copy to Clipboard</button>
-        </div>
-        """, unsafe_allow_html=True)
+        # Create a textarea for easy copying (hidden but accessible)
+        st.markdown("<p style='margin-top:10px; margin-bottom:5px;'><strong>Click below to copy:</strong></p>", unsafe_allow_html=True)
         
-        # Hidden div with the message for JavaScript to access
-        st.markdown(f'<div id="nice-message-text" style="display: none;">{nice_message}</div>', unsafe_allow_html=True)
+        # Create a text area containing the message for easy copying
+        st.text_area(
+            label="",
+            value=nice_message,
+            height=100,
+            label_visibility="collapsed",
+            help="Click in this box, press Ctrl+A to select all, then Ctrl+C to copy"
+        )
 
 # History section (collapsible)
 if st.session_state.history:
