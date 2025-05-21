@@ -153,10 +153,34 @@ if st.session_state.current_nice_thing:
         nice_message = st.session_state.current_nice_thing
         st.markdown(nice_message)
         
-        # Use Streamlit's built-in clipboard functionality
-        st.button("Copy to Clipboard", 
-                 on_click=lambda: st.write_to_clipboard(nice_message),
-                 help="Copy this message to your clipboard")
+        # Implement clipboard functionality using JavaScript
+        st.markdown("""
+        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+            <button 
+                onclick="
+                    navigator.clipboard.writeText(document.getElementById('nice-message-text').innerText);
+                    this.innerText='Copied!';
+                    setTimeout(() => this.innerText='Copy to Clipboard', 2000);
+                "
+                style="
+                    background-color: #4CAF50;
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 14px;
+                    margin: 4px 2px;
+                    cursor: pointer;
+                    border-radius: 4px;
+                "
+            >Copy to Clipboard</button>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Hidden div with the message for JavaScript to access
+        st.markdown(f'<div id="nice-message-text" style="display: none;">{nice_message}</div>', unsafe_allow_html=True)
 
 # History section (collapsible)
 if st.session_state.history:
