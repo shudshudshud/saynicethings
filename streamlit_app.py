@@ -15,7 +15,8 @@ def generate_nice_things(prompt: str, previous_response: Optional[str] = None) -
     try:
         # This is where you'll connect to Gemini API
         if st.session_state.get('use_api'):
-            model = genai.GenerativeModel('gemini-flash-2.0')
+            # Using Gemini 1.5 Flash - faster and more cost-effective
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
             if previous_response:
                 # Include previous response for refinement
